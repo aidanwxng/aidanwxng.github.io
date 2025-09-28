@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aidan Wang</title>
   <link rel="icon" type="image/png" href="assets/img/favicon2.png">
+  <link rel="preload" as="image" href="assets/img/hosapodium.jpeg" imagesrcset="assets/img/hosapodium.jpeg">
+  <link rel="preload" as="image" href="assets/img/sunnybrookteam.png" imagesrcset="assets/img/sunnybrookteam.png">
   <style>
     :root {
       --fg: #111;
@@ -50,11 +52,13 @@
 
     .scroller-track {
       display: flex;
-      gap: 12px;
+      gap: 0;
       align-items: stretch;
       width: max-content;
       /* slower on desktop, a bit faster on mobile; tweak as you like */
       animation: marquee 45s linear infinite;
+      will-change: transform;               /* <- add */
+      transform: translate3d(0,0,0);
     }
 
     /* .scroller:hover .scroller-track { animation-play-state: paused; } */
@@ -65,6 +69,7 @@
       /* border-right: 1px solid var(--border); */
       background: var(--card);
       overflow: hidden;          /* crop any overflow */
+      margin-right: 12px; 
     }
 
     .item img {
@@ -93,7 +98,7 @@
 
     /* Mobile tweaks */
     @media (max-width: 720px) {
-      .item { width: 200px; }
+      .item { width: 350px; }
       .scroller-track { animation-duration: 30s; }
     }
     /* .carousel { border:1px solid var(--border); max-width: 420px; }
