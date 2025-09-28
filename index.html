@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aidan Wang</title>
+  <link rel="icon" type="image/png" href="assets/img/favicon2.png">
+  <style>
+    :root {
+      --fg: #111;
+      --bg: #fff;
+      --muted: #555;
+      --border: #e6e6e6;
+      --maxw: 900px;
+    }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--fg); font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+    header { position: sticky; top:0; background:var(--bg); border-bottom: 1px solid var(--border); }
+    .nav { display:flex; align-items:center; justify-content:space-between; max-width: var(--maxw); margin: 0 auto; padding: 12px 16px; }
+    .brand a { text-decoration: none; color: inherit; font-weight: 600; letter-spacing: 0.2px; }
+    /* Desktop nav */
+    .links { display:flex; gap: 16px; }
+    .links a { text-decoration:none; padding: 6px 10px; border-radius: 4px; }
+    .links a[aria-current="page"] { outline: 1px solid var(--border); }
+
+    /* Mobile menu */
+    .menu-btn { display:none; background:none; border:1px solid var(--border); padding:6px 10px; }
+    .menu-panel { display:none; border-top:1px solid var(--border); }
+    .menu-panel a { display:block; padding:10px 16px; text-decoration:none; border-bottom:1px solid var(--border); }
+
+    main { max-width: var(--maxw); margin: 0 auto; padding: 20px 16px 64px; }
+    h1, h3 { font-weight:600; line-height:1.2; margin: 16px 0 8px; }
+    h2 { font-weight:600; line-height:1.2; margin: 24px 0 12px; }
+    p { margin: 8px 0; }
+    .muted { color: var(--muted); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    /* Home */
+    .home { display:grid; grid-template-columns: 220px 1fr; gap: 20px; align-items:start; }
+    .headshot { width: 100%; height: auto;}
+    .blue-link { color: #0066cc; }
+
+    /* Carousel (very minimal: one slide visible) */
+    /* Auto-scrolling horizontal image strip */
+    .scroller {
+      /* border: 1px solid var(--border); */
+      overflow: hidden;
+      max-width: 100%;
+    }
+
+    .scroller-track {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+      width: max-content;
+      /* slower on desktop, a bit faster on mobile; tweak as you like */
+      animation: marquee 45s linear infinite;
+    }
+
+    /* .scroller:hover .scroller-track { animation-play-state: paused; } */
+
+    .item {
+      flex: 0 0 auto;
+      width: 390px;              /* Card width on desktop */
+      /* border-right: 1px solid var(--border); */
+      background: var(--card);
+      overflow: hidden;          /* crop any overflow */
+    }
+
+    .item img {
+      display: block;
+      width: 100%;
+      height: 270px;
+      object-fit: cover; 
+      /* border-bottom: 1px solid var(--border); */
+    }
+
+    .caption {
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 8px 10px 12px;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); } /* because content is duplicated once */
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .scroller-track { animation: none; }
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 720px) {
+      .item { width: 200px; }
+      .scroller-track { animation-duration: 30s; }
+    }
+    /* .carousel { border:1px solid var(--border); max-width: 420px; }
+    .slide { display:none; }
+    .slide.active { display:block; }
+    .slide img { width:100%; height:auto; display:block; }
+    .caption { font-size: 0.9rem; color: var(--muted); padding: 8px 12px 12px; }
+    .carousel-controls { display:flex; justify-content:space-between; border-top:1px solid var(--border); }
+    .carousel-controls button { appearance:none; background:none; border:0; padding:10px 12px; cursor:pointer; } */
+
+    /* Research */
+    .pdf-embed { width: 100%; height: 70vh; border: 1px solid var(--border); }
+
+    /* Projects */
+    .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card { border:1px solid var(--border); padding: 12px; }
+    .card img {
+      width: 100%;
+      height: 150px;         /* pick the height you like, e.g. 180px */
+      object-fit: cover;     /* crops while keeping proportions */
+      border: 1px solid var(--border);
+    }
+    .card h3 { margin:10px 0 6px; font-size:1.05rem; }
+    .card p { margin:0 0 8px; font-size:0.95rem; }
+
+    /* Footer */
+    footer { max-width: var(--maxw); margin: 32px auto 24px; padding: 0 16px; font-size: 0.9rem; color: var(--muted); }
+    .social-icons {
+      margin-top: 8px;
+      display: flex;
+      gap: 14px;
+    }
+    .social-icons a svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--muted);
+      transition: fill 0.2s ease;
+    }
+
+    .social-icons a:hover svg {
+      fill: #0066cc; /* hover color */
+    }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      .links { display:none; }
+      .menu-btn { display:inline-block; }
+      .menu-panel { display:none; }
+      .home { grid-template-columns: 1fr; }
+      .pdf-embed { height: 55vh; }
+      .grid { grid-template-columns: 1fr; }
+      .carousel { max-width: 100%; }
+      .card img { height: 190px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav" role="navigation" aria-label="Primary">
+      <div class="brand"><a href="#home" data-link id="brandName">Your Name</a></div>
+      <nav class="links" aria-label="Desktop">
+        <a href="#home" data-link>Home</a>
+        <a href="#research" data-link>Research</a>
+        <a href="#projects" data-link>Projects</a>
+        <a href="assets/resume.pdf" target="_blank" rel="noopener">Resume ↗</a>
+      </nav>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel" aria-label="Open menu">Menu ▾</button>
+    </div>
+    <div id="menuPanel" class="menu-panel" role="menu" aria-label="Mobile">
+      <a href="#home" data-link role="menuitem">Home</a>
+      <a href="#research" data-link role="menuitem">Research</a>
+      <a href="#projects" data-link role="menuitem">Projects</a>
+      <a href="assets/resume.pdf" target="_blank" rel="noopener" role="menuitem">Resume ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME (default) -->
+    <section id="home" class="route" data-route="home" aria-labelledby="homeHeading">
+      <h1 id="homeHeading" class="sr-only">Home</h1>
+      <div class="home">
+        <img class="headshot" src="assets/img/headshot.jpg" alt="Headshot of Your Name" />
+        <div>
+          <h1>Hi, I'm <span id="homeName">Your Name</span>.</h1>
+          <p>I'm a first-year undergraduate at the University of Toronto studying computer science, cognitive science, and linguistics.</p>
+          <p>Previously, I've worked as an intern at the 
+              <strong>
+                <a class="blue-link" href="https://health.sunnybrook.ca/from-high-school-to-medical-school-sri-gives-students-the-chance-to-engage-in-research/" target="_blank" rel="noopener">
+                  Sunnybrook Research Institute (SRI)</a>
+              </strong> 
+              under the supervision of Dr. Meaghan O'Reilly and David Martin.
+            Outside of school, I've also represented Canada 3 times at the
+            <strong>
+              <a class="blue-link" href="https://ioling.org/" target="_blank" rel="noopener">
+                International Linguistics Olympiad (IOL)</a></strong>.
+          </p>
+          </div>
+        </div>
+        <div class="scroller" aria-label="Highlights">
+            <div class="scroller-track">
+              <!-- Set A -->
+              <figure class="item">
+                <img src="assets/img/iol-2025.jpg" alt="IOL 2025 Team Photo" />
+                <figcaption class="caption">IOL 2025 — Taipei, Taiwan</figcaption>
+              </figure>
+              <figure class="item">
+                <img src="assets/img/iol-2024.jpg" alt="IOL 2024 Team Photo" />
+                <figcaption class="caption">IOL 2024 — Brasília, Brazil</figcaption>
+              </figure>
+              <figure class="item">
+                <img src="assets/img/iol-2022.jpg" alt="IOL 2022 Team Photo" />
+                <figcaption class="caption">IOL 2022 — Castletown, Isle of Man</figcaption>
+              </figure>
+              <figure class="item">
+                <img src="assets/img/hosa.jpeg" alt="HOSA Podium Photo" />
+                <figcaption class="caption">HOSA 2024 - Houston, USA</figcaption>
+              </figure>
+              <figure class="item">
+                <img src="assets/img/sunnybrook.png" alt="Sunnybrook Team Photo" />
+                <figcaption class="caption">SRI 2024 — Toronto, Canada</figcaption>
+              </figure>
+
+              <!-- Set B (duplicate Set A for seamless loop) -->
+              <figure class="item">
+                <img src="assets/img/iol-2025.jpg" alt="" aria-hidden="true" />
+                <figcaption class="caption" aria-hidden="true">IOL 2025 — Taipei, Taiwan</figcaption>
+              </figure>
+              <figure class="item">
+                <img src="assets/img/iol-2024.jpg" alt="" aria-hidden="true" />
+                <figcaption class="caption" aria-hidden="true">IOL 2024 — Brasília, Brazil</figcaption>
+              </figure>
+              <figure class="item">
+                <img src="assets/img/iol-2022.jpg" alt="" aria-hidden="true" />
+                <figcaption class="caption" aria-hidden="true">IOL 2022 — Castletown, Isle of Man</figcaption>
+              </figure>
+              <figure class="item">
+                <img src="assets/img/hosa.jpeg" alt="" aria-hidden="true" />
+                <figcaption class="caption" aria-hidden="true">HOSA — Health science competition</figcaption>
+              </figure>
+              <figure class="item">
+                <img src="assets/img/sunnybrook.png" alt="" aria-hidden="true" />
+                <figcaption class="caption" aria-hidden="true">Sunnybrook — Research internship</figcaption>
+              </figure>
+            </div>
+          </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section id="research" class="route" data-route="research" hidden aria-labelledby="researchHeading">
+      <h1 id="researchHeading">Research</h1>
+      <p>
+        <h2>Sunnybrook Research Institute (Summer 2024)</h2>
+        At Sunnybrook, I developed an automated method for vertebrae segmentation to accelerate focused ultrasound (FUS) treatment planning. Using <strong>convolutional neural networks (U-Net architecture)</strong>, I adapted models trained on human CT scans for application in porcine experiments. 
+        This approach reduced segmentation time from <strong>several hours to minutes</strong>, enabling faster and more accurate treatment simulations. My work demonstrated how AI-driven medical imaging can streamline preclinical workflows and support the advancement of non-invasive therapies.
+      </p>
+      <p class="muted"><br>Slides from my final presentation are embedded below. On mobile, you can pinch-zoom or open in a new tab.</p>
+      <iframe class="pdf-embed" title="Sunnybrook Final Presentation" src="assets/sunnybrook-slides.pdf"></iframe>
+      <p><a href="assets/sunnybrook-slides.pdf" target="_blank" rel="noopener">Open PDF in new tab ↗</a></p>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="route" data-route="projects" hidden aria-labelledby="projectsHeading">
+      <h1 id="projectsHeading">Projects</h1><br>
+      <div class="grid" id="projectsGrid">
+        <!-- Replace cards below to match your resume projects -->
+        <article class="card">
+          <img src="assets/img/lookahead.png" alt="LookAhead thumbnail" />
+          <h3>LookAhead</h3>
+          <p>Digital voice-activated assistant that describes objects to the blind using AdHawk eyetracking glasses.</p>
+          <p><em>Python, Google Vision AI, OpenCV, PyAudio, SpeechRecognition</em></p>
+          <p><a href="https://devpost.com/software/lookahead" target="_blank" rel="noopener">Demo ↗</a></p>
+        </article>
+        <article class="card">
+          <img src="assets/img/sortthe6ix.png" alt="Sort the 6ix thumbnail" />
+          <h3>Sort the 6ix</h3>
+          <p>Mobile app that informs user how to dispose of waste based on a real-time photo.</p>
+          <p><em>Python, Flask, React Native, HuggingFace, Google Vision AI</em></p>
+          <p><a href="https://devpost.com/software/sorting-the-6ix" target="_blank" rel="noopener">Demo ↗</a></p>
+        </article>
+        <article class="card">
+          <img src="assets/img/feverfighters.png" alt="Fever Fighters thumbnail" />
+          <h3>Fever Fighters</h3>
+          <p>Single-player children’s game where players learn how to survive a cold in three levels.</p>
+          <p><em>Java, Swing API</em><br><br></p>
+          <p><a href="https://www.youtube.com/watch?v=PIf2JA22uJw" target="_blank" rel="noopener">Demo ↗</a></p>
+        </article>
+        <article class="card">
+          <img src="assets/img/chemsim.png" alt="ChemSim thumbnail" />
+          <h3>ChemSim</h3>
+          <p>Website with a 2D organic molecule builder and IUPAC name generator to support chemistry students.</p>
+          <p><em>JavaScript, Canvas, Fetch API</em><br><br></p>
+          <p><a href="https://red4wiz.github.io/ChemSim/builder.html" target="_blank" rel="noopener">Demo ↗</a></p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+  <div>© <span id="year"></span> <span id="footerName"></span>.</div>
+  <div class="social-icons">
+    <a href="mailto:aidanw.wang@mail.utoronto.ca" aria-label="Email">
+      <!-- Email SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20 4H4c-1.1 0-2 .9-2 
+                 2v12c0 1.1.9 2 2 
+                 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2
+                 -2zm0 4-8 5-8-5V6l8 
+                 5 8-5v2z"/>
+      </svg>
+    </a>
+    <a href="https://github.com/aidanwxng" target="_blank" rel="noopener" aria-label="GitHub">
+      <!-- GitHub SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 .5C5.7.5.6 5.6.6 
+                 12c0 5.1 3.3 9.4 7.9 
+                 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9
+                 -1.5-.5-1.2-1.1-1.5-1.1
+                 -1.5-.9-.6.1-.6.1-.6 1 
+                 .1 1.6 1 1.6 1 .9 1.6 2.4 
+                 1.1 3 .8.1-.7.3-1.1.6-1.4-2.6-.3-5.3
+                 -1.3-5.3-5.8 0-1.3.5-2.4 
+                 1.2-3.3-.1-.3-.5-1.5.1
+                 -3.1 0 0 1-.3 3.4 1.2a11.7 
+                 11.7 0 0 1 6.2 0c2.4-1.5 
+                 3.4-1.2 3.4-1.2.6 1.6.2 
+                 2.8.1 3.1.8.9 1.2 2 1.2 
+                 3.3 0 4.5-2.7 5.5-5.3 
+                 5.8.4.3.7.9.7 1.9v2.9c0 
+                 .3.2.7.8.6A11.5 11.5 0 0 0 
+                 23.4 12C23.4 5.6 18.3.5 
+                 12 .5z"/>
+      </svg>
+    </a>
+    <a href="https://linkedin.com/in/aidanwxng" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <!-- LinkedIn SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 0h-14c-2.8 
+                 0-5 2.2-5 5v14c0 2.8 2.2 
+                 5 5 5h14c2.8 0 5-2.2 
+                 5-5V5c0-2.8-2.2-5-5
+                 -5zM7.1 20.5H3.6V9h3.5v11.5zM5.4 
+                 7.4c-1.1 0-2-.9-2-2s.9
+                 -2 2-2 2 .9 2 2-.9 
+                 2-2 2zm15.1 13.1h-3.5v-5.6c0-1.3 
+                 0-3-1.8-3s-2.1 1.4-2.1 
+                 2.9v5.7h-3.5V9h3.4v1.6h.1c.5-1 
+                 1.8-2.1 3.7-2.1 4 0 4.8 
+                 2.6 4.8 6v5.9z"/>
+      </svg>
+    </a>
+  </div>
+</footer>
+
+  <script>
+    // --- Configuration ---
+    const SITE_NAME = "Aidan Wang"; // top-left and Home section name
+
+    // Set dynamic text immediately
+    document.getElementById('brandName').textContent = SITE_NAME;
+    document.getElementById('homeName').textContent = SITE_NAME;
+    document.getElementById('footerName').textContent = SITE_NAME;
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // =====================
+    // Mobile menu (declare BEFORE any calls)
+    // =====================
+    const menuBtn = document.getElementById('menuBtn');
+    const menuPanel = document.getElementById('menuPanel');
+    function openMenu(){ if(menuPanel){ menuPanel.style.display = 'block'; } if(menuBtn){ menuBtn.setAttribute('aria-expanded','true'); } }
+    function closeMenu(){ if(menuPanel){ menuPanel.style.display = 'none'; } if(menuBtn){ menuBtn.setAttribute('aria-expanded','false'); } }
+    if(menuBtn){
+      menuBtn.addEventListener('click', () => {
+        const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+        expanded ? closeMenu() : openMenu();
+      });
+    }
+    if(menuPanel){
+      menuPanel.addEventListener('click', (e) => { if(e.target.matches('a')) closeMenu(); });
+    }
+
+    // =====================
+    // Routing (Home default); initial load should NOT outline any nav item
+    // =====================
+    const routes = Array.from(document.querySelectorAll('.route'));
+    const desktopLinks = Array.from(document.querySelectorAll('.links a[data-link]'));
+    let hasInteracted = false;
+
+    desktopLinks.forEach(a => a.addEventListener('click', () => hasInteracted = true));
+    document.querySelectorAll('#menuPanel a[data-link], .brand a[data-link]').forEach(a => a.addEventListener('click', () => hasInteracted = true));
+
+    function setActiveOutline(route) {
+      desktopLinks.forEach(a => {
+        const isActive = a.getAttribute('href') === '#' + route;
+        a.setAttribute('aria-current', isActive ? 'page' : 'false');
+      });
+    }
+    function clearOutline(){ desktopLinks.forEach(a => a.setAttribute('aria-current','false')); }
+
+    function show(route, outline) {
+      routes.forEach(sec => { sec.hidden = sec.dataset.route !== route; });
+      if (outline) setActiveOutline(route); else clearOutline();
+      closeMenu();
+    }
+
+    function handleHash(initial=false) {
+      const route = (location.hash.replace('#','') || 'home');
+      show(route, initial ? false : hasInteracted);
+    }
+    window.addEventListener('hashchange', () => handleHash(false));
+    handleHash(true); // initial load => no outlined nav item
+
+    // =====================
+    // Minimal carousel (attach listeners AFTER error-free setup)
+    // =====================
+    // const slides = Array.from(document.querySelectorAll('.carousel .slide'));
+    // let index = Math.max(0, slides.findIndex(s => s.classList.contains('active')));
+    // if(index < 0) index = 0;
+    // function showSlide(i){
+    //   index = (i + slides.length) % slides.length;
+    //   slides.forEach((s, n) => s.classList.toggle('active', n === index));
+    // }
+    // const prevBtn = document.getElementById('prevBtn');
+    // const nextBtn = document.getElementById('nextBtn');
+    // if(prevBtn) prevBtn.addEventListener('click', () => showSlide(index - 1));
+    // if(nextBtn) nextBtn.addEventListener('click', () => showSlide(index + 1));
+  </script>
+</body>
+</html>
+
+  <!--
+  DEPLOY (GitHub Pages)
+  1) Create a repo named username.github.io
+  2) Put this index.html at the repo root
+  3) Create /assets and /assets/img
+  4) Add files:
+     - assets/img/headshot.jpg
+     - assets/img/iol-2022.jpg
+     - assets/img/iol-2024.jpg
+     - assets/img/iol-2025.jpg
+     - assets/img/hosa.jpeg
+     - assets/img/sunnybrook.png
+     - assets/resume.pdf
+     - assets/sunnybrook-slides.pdf
+  5) Commit & push; site will be live at https://username.github.io/
+  -->
