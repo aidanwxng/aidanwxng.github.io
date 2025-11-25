@@ -56,9 +56,10 @@
       align-items: stretch;
       width: max-content;
       /* slower on desktop, a bit faster on mobile; tweak as you like */
-      animation: marquee 45s linear infinite;
+      /* animation: marquee 45s linear infinite; */
       will-change: transform;               /* <- add */
-      transform: translate3d(0,0,0);
+      /* transform: translate3d(0,0,0); */
+      transform: translateX(0);
     }
 
     /* .scroller:hover .scroller-track { animation-play-state: paused; } */
@@ -101,6 +102,12 @@
       .item { width: 350px; }
       .scroller-track { animation-duration: 30s; }
     }
+
+    /* FAST MODE (applied on hover or touch) */
+    .scroller-track.fast {
+      animation-duration: 8s !important; /* temporary speed boost */
+    }
+
     /* .carousel { border:1px solid var(--border); max-width: 420px; }
     .slide { display:none; }
     .slide.active { display:block; }
@@ -410,6 +417,85 @@
     }
     window.addEventListener('hashchange', () => handleHash(false));
     handleHash(true); // initial load => no outlined nav item
+
+    // ===== Smooth, position-preserving marquee =====
+    (function() {
+      const track = document.querySelector('.scroller-track');
+      if (!track) return;
+
+      let speed = 50;          // px per second (normal speed)
+      let fastSpeed = 140;     // px per second (hover speed)
+      let currentSpeed = speed;
+
+      let x = 0;
+      let lastTime = null;
+
+      function step(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const dt = (timestamp - lastTime) / 1000; // seconds since last frame
+        lastTime = timestamp;
+
+        x -= currentSpeed * dt; // move left
+
+        // Looping logic: when we've moved half the track width, reset offset
+        const totalWidth = track.scrollWidth / 2;
+        if (Math.abs(x) >= totalWidth) {
+          x += totalWidth; // never jumps visually
+        }
+
+        track.style.transform = `translateX(${x}px)`;
+
+        requestAnimationFrame(step);
+      }
+
+      requestAnimationFrame(step);
+
+      // Hover + mobile touch speed boost
+      const scroller = document.querySelector('.scroller');
+      if (scroller) {
+
+        // Desktop hover
+        scroller.addEventListener('mouseenter', () => currentSpeed = fastSpeed);
+        scroller.addEventListener('mouseleave', () => currentSpeed = speed);
+
+        // Mobile touch-and-hold
+        let touching = false;
+
+        scroller.addEventListener('touchstart', (e) => {
+          touching = true;
+          currentSpeed = fastSpeed;
+        }, { passive: true });
+
+        scroller.addEventListener('touchend', () => {
+          touching = false;
+          currentSpeed = speed;
+        });
+
+        scroller.addEventListener('touchcancel', () => {
+          touching = false;
+          currentSpeed = speed;
+        });
+
+        // If user begins scrolling vertically or moves finger too much, cancel fast mode
+        let startY = null;
+
+        scroller.addEventListener('touchmove', (e) => {
+          if (startY === null) startY = e.touches[0].clientY;
+
+          const dy = Math.abs(e.touches[0].clientY - startY);
+
+          if (dy > 20 && touching) {
+            // User is scrolling the page vertically → disable fast mode
+            touching = false;
+            currentSpeed = speed;
+          }
+        }, { passive: true });
+
+        scroller.addEventListener('touchend', () => {
+          startY = null;
+        });
+      }
+    })();
 
     // =====================
     // Minimal carousel (attach listeners AFTER error-free setup)
