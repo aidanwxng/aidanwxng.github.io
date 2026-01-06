@@ -424,6 +424,26 @@
     window.addEventListener('hashchange', () => handleHash(false));
     handleHash(true); // initial load => no outlined nav item
 
+    document.querySelectorAll('a[data-link]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const target = a.getAttribute('href'); // like "#research"
+        if (!target || !target.startsWith('#')) return;
+
+        e.preventDefault(); // <- stops the browser's default scroll-to-anchor
+
+        const route = target.slice(1);
+
+        // Mark interaction (keeps your outline logic consistent)
+        hasInteracted = true;
+
+        // If already on this route, do nothing (no scroll nudge)
+        if ((location.hash || '#home') === target) return;
+
+        // Update hash (will trigger your hashchange listener)
+        location.hash = target;
+      });
+    });
+
     // ===== Smooth, position-preserving marquee =====
     (function() {
       const track = document.querySelector('.scroller-track');
