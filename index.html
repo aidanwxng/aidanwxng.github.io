@@ -37,8 +37,8 @@
     .muted { color: var(--muted); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
-    /* Home */
-    .home { display:grid; grid-template-columns: 220px 1fr; gap: 20px; align-items:start; }
+    /* About */
+    .about { display:grid; grid-template-columns: 220px 1fr; gap: 20px; align-items:start; }
     .headshot { width: 100%; height: auto;}
     .blue-link { color: #0066cc; }
 
@@ -154,7 +154,7 @@
       .links { display:none; }
       .menu-btn { display:inline-block; }
       .menu-panel { display:none; }
-      .home { grid-template-columns: 1fr; }
+      .about { grid-template-columns: 1fr; }
       .pdf-embed { height: 55vh; }
       .grid { grid-template-columns: 1fr; }
       .carousel { max-width: 100%; }
@@ -165,9 +165,9 @@
 <body>
   <header>
     <div class="nav" role="navigation" aria-label="Primary">
-      <div class="brand"><a href="#home" data-link id="brandName">Your Name</a></div>
+      <div class="brand"><a href="#about" data-link id="brandName">Your Name</a></div>
       <nav class="links" aria-label="Desktop">
-        <a href="#home" data-link>Home</a>
+        <a href="#about" data-link>About</a>
         <a href="#research" data-link>Research</a>
         <a href="#projects" data-link>Projects</a>
         <a href="assets/resume.pdf" target="_blank" rel="noopener">Resume ↗</a>
@@ -175,7 +175,7 @@
       <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel" aria-label="Open menu">Menu ▾</button>
     </div>
     <div id="menuPanel" class="menu-panel" role="menu" aria-label="Mobile">
-      <a href="#home" data-link role="menuitem">Home</a>
+      <a href="#about" data-link role="menuitem">About</a>
       <a href="#research" data-link role="menuitem">Research</a>
       <a href="#projects" data-link role="menuitem">Projects</a>
       <a href="assets/resume.pdf" target="_blank" rel="noopener" role="menuitem">Resume ↗</a>
@@ -184,12 +184,12 @@
 
   <main>
     <!-- HOME (default) -->
-    <section id="home" class="route" data-route="home" aria-labelledby="homeHeading">
-      <h1 id="homeHeading" class="sr-only">Home</h1>
-      <div class="home">
+    <section id="about" class="route" data-route="about" aria-labelledby="aboutHeading">
+      <h1 id="aboutHeading" class="sr-only">About</h1>
+      <div class="about">
         <img class="headshot" src="assets/img/headshot.jpg" alt="Headshot of Your Name" />
         <div>
-          <h1>Hi, I'm <span id="homeName">Your Name</span>.</h1>
+          <h1>Hi, I'm <span id="aboutName">Your Name</span>.</h1>
           <p>I'm a first-year undergraduate in computer science at the University of Toronto working on computational linguistics research with Prof.
             <strong>
                 <a class="blue-link" href="https://www.cs.toronto.edu/~yangxu/" target="_blank" rel="noopener">
@@ -368,11 +368,11 @@
 
   <script>
     // --- Configuration ---
-    const SITE_NAME = "Aidan Wang"; // top-left and Home section name
+    const SITE_NAME = "Aidan Wang"; // top-left and About section name
 
     // Set dynamic text immediately
     document.getElementById('brandName').textContent = SITE_NAME;
-    document.getElementById('homeName').textContent = SITE_NAME;
+    document.getElementById('aboutName').textContent = SITE_NAME;
     document.getElementById('footerName').textContent = SITE_NAME;
     document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -394,7 +394,7 @@
     }
 
     // =====================
-    // Routing (Home default); initial load should NOT outline any nav item
+    // Routing (About default); initial load should NOT outline any nav item
     // =====================
     const routes = Array.from(document.querySelectorAll('.route'));
     const desktopLinks = Array.from(document.querySelectorAll('.links a[data-link]'));
@@ -418,7 +418,7 @@
     }
 
     function handleHash(initial=false) {
-      const route = (location.hash.replace('#','') || 'home');
+      const route = (location.hash.replace('#','') || 'about');
       show(route, initial ? false : hasInteracted);
     }
     window.addEventListener('hashchange', () => handleHash(false));
@@ -437,7 +437,7 @@
         hasInteracted = true;
 
         // If already on this route, do nothing (no scroll nudge)
-        if ((location.hash || '#home') === target) return;
+        if ((location.hash || '#about') === target) return;
 
         // Update hash (will trigger your hashchange listener)
         location.hash = target;
